@@ -1,3 +1,6 @@
+// === 1. PRISMA SCHEMA ===
+// File: prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,8 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ScrapedData {
-  id   Int    @id @default(autoincrement())
-  url  String @unique
-  data Json
+model Product {
+  id          Int      @id @default(autoincrement())
+  keyword     String
+  name        String
+  description String
+  price       String
+  image       String
+  createdAt   DateTime @default(now())
 }
