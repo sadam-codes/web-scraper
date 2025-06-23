@@ -1,12 +1,21 @@
 import React from "react";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import Scraper from "./components/Scraper";
+
+const stripePromise = loadStripe("pk_test_51RbxO2RA6d6y3GOGZxmrAcVlgVygSIEqpGUKcvZsEYfIeX0c6OL7igBAPhaSqSDURMmonjvI79sEaVVX8JKLBe0o00XUsrTjD7");
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
-      <h1 className="text-3xl font-bold text-center mb-8">🌐 Web Scraper</h1>
-      <Scraper />
-    </div>
+    <>
+      <div className="bg-gray-900">
+        <div className="container w-full mx-auto bg-gray-900">
+          <Elements stripe={stripePromise}>
+            <Scraper />
+          </Elements>
+        </div>
+      </div>
+    </>
   );
 }
 

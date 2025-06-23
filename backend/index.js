@@ -2,7 +2,7 @@
 import express from "express";
 import axios from "axios";
 import * as cheerio from "cheerio";
-
+import Stripe from 'stripe';
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 
@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.get("/search", async (req, res) => {
   const { q } = req.query;
   if (!q) return res.status(400).json({ error: "Missing search term" });
@@ -82,7 +82,7 @@ app.get("/products", async (req, res) => {
       orderBy: {
         createdAt: "desc",
       },
-      skip, 
+      skip,
       take: itemsPerPage,
     });
 
@@ -103,6 +103,35 @@ app.get("/products", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch products", detail: err.message });
   }
 });
+app.post("/create-payment-intent", async (req, res) => {
+  try {
+    let { amount } = req.body;
+
+    // Clean currency symbols and convert to cents
+    amount = amount.replace(/[^\d.]/g, ""); // remove currency symbols
+    const floatAmount = parseFloat(amount); // e.g. "0.19" -> 0.19
+    const finalAmount = Math.round(floatAmount * 100); // in cents
+
+    if (finalAmount < 50) {
+      return res.status(400).json({
+        error: "Amount must be at least $0.50 (50 cents).",
+      });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: finalAmount,
+      currency: "usd", // or "pkr" etc.
+      automatic_payment_methods: { enabled: true },
+    });
+
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 
 
 app.listen(3000, () =>
