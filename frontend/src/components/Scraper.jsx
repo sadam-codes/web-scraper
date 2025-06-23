@@ -57,9 +57,7 @@ const Scraper = () => {
       toast.error("Payment initialization failed");
     }
   };
-
   return (
-
     <div className="bg-gray-900 text-white min-h-screen p-6 md:p-10">
       <h1 className="text-4xl md:text-5xl font-bold text-center text-purple-500 mb-8">🛍️ Amazon Scraper</h1>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
@@ -69,6 +67,11 @@ const Scraper = () => {
           placeholder="Search for Toys, Laptops, etc."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch(1);
+            }
+          }}
         />
         <button
           onClick={() => handleSearch(1)}
@@ -110,7 +113,6 @@ const Scraper = () => {
                 </button>
               )}
             </div>
-
           </div>
         ))}
       </div>

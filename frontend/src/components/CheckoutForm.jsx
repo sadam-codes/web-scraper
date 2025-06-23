@@ -24,26 +24,24 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
     if (result.error) {
       toast.error(result.error.message);
     } else if (result.paymentIntent.status === "succeeded") {
-      toast.success("🎉 Payment successful!");
+      toast.success("Payment successful!");
       onSuccess();
     }
   };
-
   const cardElementOptions = {
     style: {
       base: {
         fontSize: "16px",
-        color: "#1a202c", // Tailwind gray-900
+        color: "#1a202c",
         "::placeholder": {
-          color: "#a0aec0", // Tailwind gray-400
+          color: "#a0aec0",
         },
       },
       invalid: {
-        color: "#e53e3e", // Tailwind red-600
+        color: "#e53e3e",
       },
     },
   };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
@@ -54,7 +52,6 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
           <CardElement options={cardElementOptions} />
         </div>
       </div>
-
       <button
         type="submit"
         disabled={!stripe}
@@ -65,5 +62,4 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
     </form>
   );
 };
-
 export default CheckoutForm;
